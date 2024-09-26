@@ -1,0 +1,185 @@
+
+================TASK 2=========================
+===============================================
+
+1. Write an SQL query to insert a new student into the "Students" table with the following details:
+a. First Name: John,            b. Last Name: Doe ,         c. Date of Birth: 1995-08-15 ,
+d. Email: john.doe@example.com ,e. Phone Number: 1234567890
+
+mysql> INSERT INTO Students (first_name, last_name, date_of_birth, email, phone_number)
+    -> VALUES ('John', 'Doe', '1995-08-15', 'john.doe@example.com', '1234567890');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Students;
++------------+------------+-----------+---------------+----------------------+--------------+
+| student_id | first_name | last_name | date_of_birth | email                | phone_number |
++------------+------------+-----------+---------------+----------------------+--------------+
+|          1 | Anuj       | Kundar    | 2002-01-10    | ak@example.com       | 1112223333   |
+|          2 | Pritesh    | Rai       | 2003-03-20    | prai@example.com     | 4445556666   |
+|          3 | Chirag     | Padyal    | 2003-06-15    | cp@example.com       | 7778889999   |
+|          4 | Ayyaj      | Aga       | 2001-09-25    | aa@example.com       | 1212121212   |
+|          5 | Sahil      | Babar     | 2002-12-12    | sbabar@example.com   | 3334445555   |
+|          6 | Prashant   | Thombre   | 2002-02-14    | pt@example.com       | 6667778888   |
+|          7 | Sandeep    | Bais      | 2001-11-30    | sbais@example.com    | 9990001111   |
+|          8 | Vishnukant | Mule      | 2003-07-07    | vmule@example.com    | 2223334444   |
+|          9 | Prathamesh | Naik      | 2004-04-18    | pnaik@example.com    | 5556667777   |
+|         10 | Devraj     | Dumbre    | 2002-05-22    | dev@example.com      | 8889990000   |
+|         11 | John       | Doe       | 1995-08-15    | john.doe@example.com | 1234567890   |
++------------+------------+-----------+---------------+----------------------+--------------+
+11 rows in set (0.01 sec)
+
+-----------------------------------------------------------------------------------------------------------------------------
+2. Write an SQL query to enroll a student in a course. Choose an existing student and course and
+   insert a record into the "Enrollments" table with the enrollment date.
+
+mysql> INSERT INTO Enrollments (student_id, course_id, enrollment_date)
+    -> VALUES (1, 1, 2024-09-26);
+ERROR 1292 (22007): Incorrect date value: '1989' for column 'enrollment_date' at row 1
+mysql> INSERT INTO Enrollments (student_id, course_id, enrollment_date)
+    -> VALUES (1, 1, CURDATE());
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Enrollments;
++---------------+------------+-----------+-----------------+
+| enrollment_id | student_id | course_id | enrollment_date |
++---------------+------------+-----------+-----------------+
+|             1 |          1 |         1 | 2024-01-01      |
+|             2 |          2 |         2 | 2024-02-01      |
+|             3 |          3 |         3 | 2024-03-01      |
+|             4 |          4 |         4 | 2024-04-01      |
+|             5 |          5 |         5 | 2024-05-01      |
+|             6 |          6 |         1 | 2024-06-01      |
+|             7 |          7 |         2 | 2024-07-01      |
+|             8 |          8 |         3 | 2024-08-01      |
+|             9 |          9 |         4 | 2024-09-01      |
+|            10 |         10 |         5 | 2024-10-01      |
+|            11 |          1 |         1 | 2024-09-26      |
++---------------+------------+-----------+-----------------+
+11 rows in set (0.00 sec)
+
+-----------------------------------------------------------------------------------------------------------------------------
+3. Update the email address of a specific teacher in the "Teacher" table. Choose any teacher and
+   modify their email address.
+
+mysql> UPDATE Teacher
+    -> SET email = ' M.javeed@gmail.com'
+    -> WHERE teacher_id = 1;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Teacher;
++------------+------------+-----------+----------------------+
+| teacher_id | first_name | last_name | email                |
++------------+------------+-----------+----------------------+
+|          1 | Mohammed   | Javeed    |  M.javeed@gmail.com  |
+|          2 | Sailesh    | Sakpal    | s.sakpal@example.com |
+|          3 | Nilesh     | Sakpal    | n.sakpal@example.com |
+|          4 | Athul      | Nair      | a.nair@example.com   |
+|          5 | Anjali     | Sharma    | a.sharma@example.com |
+|          6 | Rahul      | Verma     | r.verma@example.com  |
+|          7 | Priya      | Reddy     | p.reddy@example.com  |
+|          8 | Sneha      | Patil     | s.patil@example.com  |
+|          9 | Amit       | Singh     | a.singh@example.com  |
+|         10 | Divya      | Mehra     | d.mehra@example.com  |
++------------+------------+-----------+----------------------+
+
+-----------------------------------------------------------------------------------------------------------------------------
+4.Write an SQL query to delete a specific enrollment record from the "Enrollments" table. Select
+  an enrollment record based on the student and course.
+
+mysql> DELETE FROM Enrollments
+    -> WHERE student_id=6 and course_id=1;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> SELECT * FROM Enrollments;
++---------------+------------+-----------+-----------------+
+| enrollment_id | student_id | course_id | enrollment_date |
++---------------+------------+-----------+-----------------+
+|             1 |          1 |         1 | 2024-01-01      |
+|             2 |          2 |         2 | 2024-02-01      |
+|             3 |          3 |         3 | 2024-03-01      |
+|             4 |          4 |         4 | 2024-04-01      |
+|             5 |          5 |         5 | 2024-05-01      |
+|             7 |          7 |         2 | 2024-07-01      |
+|             8 |          8 |         3 | 2024-08-01      |
+|             9 |          9 |         4 | 2024-09-01      |
+|            10 |         10 |         5 | 2024-10-01      |
+|            11 |          1 |         1 | 2024-09-26      |
++---------------+------------+-----------+-----------------+
+10 rows in set (0.00 sec)
+
+-----------------------------------------------------------------------------------------------------------------------------
+5. Update the "Courses" table to assign a specific teacher to a course. Choose any course and
+   teacher from the respective tables
+
+mysql> UPDATE Courses
+    -> SET teacher_id = 5
+    -> WHERE course_id = 5;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Courses;
++-----------+--------------------+---------+------------+
+| course_id | course_name        | credits | teacher_id |
++-----------+--------------------+---------+------------+
+|         1 | Mathematics        |       3 |          1 |
+|         2 | Physics            |       4 |          2 |
+|         3 | Chemistry          |       3 |          3 |
+|         4 | Biology            |       4 |          4 |
+|         5 | English Literature |       3 |          5 |
+|         6 | History            |       2 |          2 |
+|         7 | Geography          |       3 |          7 |
+|         8 | Mathematics        |       4 |          8 |
+|         9 | Philosophy         |       2 |          9 |
+|        10 | Psychology         |       3 |         10 |
++-----------+--------------------+---------+------------+
+
+-----------------------------------------------------------------------------------------------------------------------------
+6. Delete a specific student from the "Students" table and remove all their enrollment records
+from the "Enrollments" table. Be sure to maintain referential integrity
+
+mysql> DELETE FROM Students
+    -> WHERE student_id = 11;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Students;
++------------+------------+-----------+---------------+--------------------+--------------+
+| student_id | first_name | last_name | date_of_birth | email              | phone_number |
++------------+------------+-----------+---------------+--------------------+--------------+
+|          1 | Anuj       | Kundar    | 2002-01-10    | ak@example.com     | 1112223333   |
+|          2 | Pritesh    | Rai       | 2003-03-20    | prai@example.com   | 4445556666   |
+|          3 | Chirag     | Padyal    | 2003-06-15    | cp@example.com     | 7778889999   |
+|          4 | Ayyaj      | Aga       | 2001-09-25    | aa@example.com     | 1212121212   |
+|          5 | Sahil      | Babar     | 2002-12-12    | sbabar@example.com | 3334445555   |
+|          6 | Prashant   | Thombre   | 2002-02-14    | pt@example.com     | 6667778888   |
+|          7 | Sandeep    | Bais      | 2001-11-30    | sbais@example.com  | 9990001111   |
+|          8 | Vishnukant | Mule      | 2003-07-07    | vmule@example.com  | 2223334444   |
+|          9 | Prathamesh | Naik      | 2004-04-18    | pnaik@example.com  | 5556667777   |
+|         10 | Devraj     | Dumbre    | 2002-05-22    | dev@example.com    | 8889990000   |
++------------+------------+-----------+---------------+--------------------+--------------+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+7. Update the payment amount for a specific payment record in the "Payments" table. Choose any
+payment record and modify the payment amount.
+
+UPDATE Payments
+SET amount = 1500
+WHERE payment_id = 1;
+
+mysql> SELECT * FROM Payments;
++------------+------------+---------+--------------+
+| payment_id | student_id | amount  | payment_date |
++------------+------------+---------+--------------+
+|          1 |          1 | 1500.00 | 2024-01-10   |
+|          2 |          2 |  600.00 | 2024-02-15   |
+|          3 |          3 |  550.00 | 2024-03-20   |
+|          4 |          4 |  450.00 | 2024-04-25   |
+|          5 |          5 |  700.00 | 2024-05-30   |
+|          6 |          6 |  300.00 | 2024-06-10   |
+|          7 |          7 |  350.00 | 2024-07-15   |
+|          8 |          8 |  400.00 | 2024-08-20   |
+|          9 |          9 |  500.00 | 2024-09-25   |
+|         10 |         10 |  450.00 | 2024-10-30   |
++------------+------------+---------+--------------+
+10 rows in set (0.00 sec)
