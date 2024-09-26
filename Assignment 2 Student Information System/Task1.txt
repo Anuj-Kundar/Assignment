@@ -1,0 +1,223 @@
+==========Task 1 Database Design:==========
+
+Q. Create the database named "SISDB":
+
+mysql> CREATE DATABASE SISDB;
+Query OK, 1 row affected (0.07 sec)
+
+mysql> USE SISDB;
+Database changed
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Q. Define the schema for the Students, Courses, Enrollments, Teacher, and Payments tables based
+on the provided schema. Write SQL scripts to create the mentioned tables with appropriate data
+types, constraints, and relationships.
+a. Students
+b. Courses
+c. Enrollments
+d. Teacher
+e. Payments
+
+CREATE TABLE Students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE,
+    email VARCHAR(100),
+    phone_number VARCHAR(15)
+);
+Query OK, 0 rows affected (0.05 sec)
+
+CREATE TABLE Teacher (
+    teacher_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100)
+);
+Query OK, 0 rows affected (0.04 sec)
+
+CREATE TABLE Courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(100),
+    credits INT,
+    teacher_id INT,
+    FOREIGN KEY (teacher_id) REFERENCES Teacher(teacher_id)
+);
+
+CREATE TABLE Enrollments (
+    enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    enrollment_date DATE,
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+Query OK, 0 rows affected (0.05 sec)
+
+CREATE TABLE Payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    amount DECIMAL(10, 2),
+    payment_date DATE,
+    FOREIGN KEY (student_id) REFERENCES Students(student_id)
+);
+Query OK, 0 rows affected (0.03 sec)
+
+-----------------------------------------------------------------------------------------------------------------------------
+Q. Insert at least 10 sample records into each of the following tables.
+i. Students          ii. Courses
+iii. Enrollments     iv. Teacher     v. Payments
+
+INSERT INTO Students (first_name, last_name, date_of_birth, email, phone_number) 
+VALUES 
+('Anuj', 'Kundar', '2002-01-10', 'ak@example.com', '1112223333'),
+('Pritesh', 'Rai', '2003-03-20', 'prai@example.com', '4445556666'),
+('Chirag', 'Padyal', '2003-06-15', 'cp@example.com', '7778889999'),
+('Ayyaj', 'Aga', '2001-09-25', 'aa@example.com', '1212121212'),
+('Sahil', 'Babar', '2002-12-12', 'sbabar@example.com', '3334445555'),
+('Prashant', 'Thombre', '2002-02-14', 'pt@example.com', '6667778888'),
+('Sandeep', 'Bais', '2001-11-30', 'sbais@example.com', '9990001111'),
+('Vishnukant', 'Mule', '2003-07-07', 'vmule@example.com', '2223334444'),
+('Prathamesh', 'Naik', '2004-04-18', 'pnaik@example.com', '5556667777'),
+('Devraj', 'Dumbre', '2002-05-22', 'dev@example.com', '8889990000');
+
+mysql> SELECT * FROM Students;
++------------+------------+-----------+---------------+----------------------+--------------+
+| student_id | first_name | last_name | date_of_birth | email                | phone_number |
++------------+------------+-----------+---------------+----------------------+--------------+
+|          1 | Anuj       | Kundar    | 2002-01-10    | ak@example.com       | 1112223333   |
+|          2 | Pritesh    | Rai       | 2003-03-20    | prai@example.com     | 4445556666   |
+|          3 | Chirag     | Padyal    | 2003-06-15    | cp@example.com       | 7778889999   |
+|          4 | Ayyaj      | Aga       | 2001-09-25    | aa@example.com       | 1212121212   |
+|          5 | Sahil      | Babar     | 2002-12-12    | sbabar@example.com   | 3334445555   |
+|          6 | Prashant   | Thombre   | 2002-02-14    | pt@example.com       | 6667778888   |
+|          7 | Sandeep    | Bais      | 2001-11-30    | sbais@example.com    | 9990001111   |
+|          8 | Vishnukant | Mule      | 2003-07-07    | vmule@example.com    | 2223334444   |
+|          9 | Prathamesh | Naik      | 2004-04-18    | pnaik@example.com    | 5556667777   |
+|         10 | Devraj     | Dumbre    | 2002-05-22    | dev@example.com      | 8889990000   |
++------------+------------+-----------+---------------+----------------------+--------------+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO Teacher (first_name, last_name, email)
+VALUES 
+('Mohammed', 'Javeed', 'M.javeed@example.com'),
+('Sailesh', 'Sakpal', 's.sakpal@example.com'),
+('Nilesh', 'Sakpal', 'n.sakpal@example.com'),
+('Athul', 'Nair', 'a.nair@example.com');
+('Anjali', 'Sharma', 'a.sharma@example.com'),
+('Rahul', 'Verma', 'r.verma@example.com'),
+('Priya', 'Reddy', 'p.reddy@example.com'),
+('Sneha', 'Patil', 's.patil@example.com'),
+('Amit', 'Singh', 'a.singh@example.com'),
+('Divya', 'Mehra', 'd.mehra@example.com');
+
+mysql> SELECT * FROM Teacher;
++------------+------------+-----------+----------------------+
+| teacher_id | first_name | last_name | email                |
++------------+------------+-----------+----------------------+
+|          1 | Mohammed   | Javeed    | M.javeed@example.com |
+|          2 | Sailesh    | Sakpal    | s.sakpal@example.com |
+|          3 | Nilesh     | Sakpal    | n.sakpal@example.com |
+|          4 | Athul      | Nair      | a.nair@example.com   |
+|          5 | Anjali     | Sharma    | a.sharma@example.com |
+|          6 | Rahul      | Verma     | r.verma@example.com  |
+|          7 | Priya      | Reddy     | p.reddy@example.com  |
+|          8 | Sneha      | Patil     | s.patil@example.com  |
+|          9 | Amit       | Singh     | a.singh@example.com  |
+|         10 | Divya      | Mehra     | d.mehra@example.com  |
++------------+------------+-----------+----------------------+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO Courses (course_name, credits, teacher_id)
+VALUES 
+('Computer Science', 3, 1),
+('Physics', 4, 2),
+('Chemistry', 3, 3),
+('Biology', 4, 4),
+('English ', 3, 5),
+('History', 2, 2);
+('Geography', 3, 7),
+('Mathematics', 4, 8),
+('Philosophy', 2, 9),
+('Psychology', 3, 10);
+
+mysql> SELECT * FROM Courses;
++-----------+--------------------+---------+------------+
+| course_id | course_name        | credits | teacher_id |
++-----------+--------------------+---------+------------+
+|         1 | Computer Science   |       3 |          1 |
+|         2 | Physics            |       4 |          2 |
+|         3 | Chemistry          |       3 |          3 |
+|         4 | Biology            |       4 |          4 |
+|         5 | English Literature |       3 |          5 |
+|         6 | History            |       2 |          2 |
+|         7 | Geography          |       3 |          7 |
+|         8 | Mathematics        |       4 |          8 |
+|         9 | Philosophy         |       2 |          9 |
+|        10 | Psychology         |       3 |         10 |
++-----------+--------------------+---------+------------+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO Enrollments (student_id, course_id, enrollment_date)
+VALUES 
+(1, 1, '2024-01-01'),
+(2, 2, '2024-02-01'),
+(3, 3, '2024-03-01'),
+(4, 4, '2024-04-01'),
+(5, 5, '2024-05-01'),
+(6, 1, '2024-06-01'),
+(7, 2, '2024-07-01'),
+(8, 3, '2024-08-01'),
+(9, 4, '2024-09-01'),
+(10, 5, '2024-10-01');
+mysql> SELECT * FROM Enrollments;
++---------------+------------+-----------+-----------------+
+| enrollment_id | student_id | course_id | enrollment_date |
++---------------+------------+-----------+-----------------+
+|             1 |          1 |         1 | 2024-01-01      |
+|             2 |          2 |         2 | 2024-02-01      |
+|             3 |          3 |         3 | 2024-03-01      |
+|             4 |          4 |         4 | 2024-04-01      |
+|             5 |          5 |         5 | 2024-05-01      |
+|             6 |          6 |         1 | 2024-06-01      |
+|             7 |          7 |         2 | 2024-07-01      |
+|             8 |          8 |         3 | 2024-08-01      |
+|             9 |          9 |         4 | 2024-09-01      |
+|            10 |         10 |         5 | 2024-10-01      |
++---------------+------------+-----------+-----------------+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO Payments (student_id, amount, payment_date)
+VALUES 
+(1, 500.00, '2024-01-10'),
+(2, 600.00, '2024-02-15'),
+(3, 550.00, '2024-03-20'),
+(4, 450.00, '2024-04-25'),
+(5, 700.00, '2024-05-30'),
+(6, 300.00, '2024-06-10'),
+(7, 350.00, '2024-07-15'),
+(8, 400.00, '2024-08-20'),
+(9, 500.00, '2024-09-25'),
+(10, 450.00, '2024-10-30');
+mysql> SELECT * FROM Payments;
++------------+------------+--------+--------------+
+| payment_id | student_id | amount | payment_date |
++------------+------------+--------+--------------+
+|          1 |          1 | 500.00 | 2024-01-10   |
+|          2 |          2 | 600.00 | 2024-02-15   |
+|          3 |          3 | 550.00 | 2024-03-20   |
+|          4 |          4 | 450.00 | 2024-04-25   |
+|          5 |          5 | 700.00 | 2024-05-30   |
+|          6 |          6 | 300.00 | 2024-06-10   |
+|          7 |          7 | 350.00 | 2024-07-15   |
+|          8 |          8 | 400.00 | 2024-08-20   |
+|          9 |          9 | 500.00 | 2024-09-25   |
+|         10 |         10 | 450.00 | 2024-10-30   |
++------------+------------+--------+--------------+
