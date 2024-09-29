@@ -1,0 +1,108 @@
+-----Task 4 : Subquery and its type-----
+========================================
+
+
+1. Write an SQL query to calculate the average number of students enrolled in each course. Use
+aggregate functions and subqueries to achieve this.
+
+mysql> SELECT AVG(enrollment_count) AS avg_students_per_course
+    -> FROM (
+    ->     SELECT course_id, COUNT(student_id) AS enrollment_count
+    ->     FROM Enrollments
+    ->     GROUP BY course_id
+    -> ) AS course_enrollments;
++-------------------------+
+| avg_students_per_course |
++-------------------------+
+|                  2.0000 |
++-------------------------+
+1 row in set (0.03 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+2. Identify the student(s) who made the highest payment. Use a subquery to find the maximum
+payment amount and then retrieve the student(s) associated with that amount.
+
+mysql> SELECT s.first_name, s.last_name, p.amount
+    -> FROM Students s
+    -> JOIN Payments p ON s.student_id = p.student_id
+    -> WHERE p.amount = (SELECT MAX(amount) FROM Payments);
++------------+-----------+---------+
+| first_name | last_name | amount  |
++------------+-----------+---------+
+| Anuj       | Kundar    | 1500.00 |
++------------+-----------+---------+
+1 row in set (0.06 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+3. Retrieve a list of courses with the highest number of enrollments. Use subqueries to find the
+course(s) with the maximum enrollment count.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+4. Calculate the total payments made to courses taught by each teacher. Use subqueries to sum
+payments for each teacher's courses.
+
+
+
+5. Identify students who are enrolled in all available courses. Use subqueries to compare a
+student's enrollments with the total number of courses.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+6. Retrieve the names of teachers who have not been assigned to any courses. Use subqueries to
+find teachers with no course assignments.
+mysql> SELECT first_name, last_name
+    -> FROM Teacher
+    -> WHERE teacher_id NOT IN (
+    ->     SELECT DISTINCT teacher_id
+    ->     FROM Courses
+    -> );
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| Rahul      | Verma     |
++------------+-----------+
+1 row in set (0.04 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+7. Calculate the average age of all students. Use subqueries to calculate the age of each student
+based on their date of birth.
+
+mysql> SELECT AVG(age) AS average_age
+    -> FROM (
+    ->     SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age
+    ->     FROM Students
+    -> ) AS student_ages;
++-------------+
+| average_age |
++-------------+
+|     21.5000 |
++-------------+
+1 row in set (0.06 sec)
+
+
+8. Identify courses with no enrollments. Use subqueries to find courses without enrollment
+records.
+
+
+9. Calculate the total payments made by each student for each course they are enrolled in. Use
+subqueries and aggregate functions to sum payments.
+
+
+10. Identify students who have made more than one payment. Use subqueries and aggregate
+functions to count payments per student and filter for those with counts greater than one.
+
+
+11. Write an SQL query to calculate the total payments made by each student. Join the "Students"
+table with the "Payments" table and use GROUP BY to calculate the sum of payments for each student.
+
+
+12. Retrieve a list of course names along with the count of students enrolled in each course. Use
+JOIN operations between the "Courses" table and the "Enrollments" table and GROUP BY to count enrollments.
+
+
+13. Calculate the average payment amount made by students. Use JOIN operations between the
+"Students" table and the "Payments" table and GROUP BY to calculate the average
