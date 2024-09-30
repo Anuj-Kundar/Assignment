@@ -17,7 +17,6 @@ mysql> SELECT AVG(enrollment_count) AS avg_students_per_course
 |                  2.0000 |
 +-------------------------+
 1 row in set (0.03 sec)
-
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 2. Identify the student(s) who made the highest payment. Use a subquery to find the maximum
@@ -53,35 +52,13 @@ student's enrollments with the total number of courses.
 ----------------------------------------------------------------------------------------------------------------------------------------
 6. Retrieve the names of teachers who have not been assigned to any courses. Use subqueries to
 find teachers with no course assignments.
-mysql> SELECT first_name, last_name
-    -> FROM Teacher
-    -> WHERE teacher_id NOT IN (
-    ->     SELECT DISTINCT teacher_id
-    ->     FROM Courses
-    -> );
-+------------+-----------+
-| first_name | last_name |
-+------------+-----------+
-| Rahul      | Verma     |
-+------------+-----------+
-1 row in set (0.04 sec)
+
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 7. Calculate the average age of all students. Use subqueries to calculate the age of each student
 based on their date of birth.
 
-mysql> SELECT AVG(age) AS average_age
-    -> FROM (
-    ->     SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age
-    ->     FROM Students
-    -> ) AS student_ages;
-+-------------+
-| average_age |
-+-------------+
-|     21.5000 |
-+-------------+
-1 row in set (0.06 sec)
 
 
 8. Identify courses with no enrollments. Use subqueries to find courses without enrollment
