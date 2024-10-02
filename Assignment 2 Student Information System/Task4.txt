@@ -38,48 +38,239 @@ mysql> SELECT s.first_name, s.last_name, p.amount
 3. Retrieve a list of courses with the highest number of enrollments. Use subqueries to find the
 course(s) with the maximum enrollment count.
 
+mysql> SELECT c.course_name, COUNT(e.student_id) AS enrollment_count
+    -> FROM Courses c
+    -> JOIN Enrollments e ON c.course_id = e.course_id
+    -> GROUP BY c.course_id
+    -> HAVING COUNT(e.student_id) = (
+    ->     SELECT MAX(course_enrollments)
+    ->     FROM (
+    ->         SELECT COUNT(student_id) AS course_enrollments
+    ->         FROM Enrollments
+    ->         GROUP BY course_id
+    ->     ) AS enroll_count
+    -> );
++--------------------+------------------+
+| course_name        | enrollment_count |
++--------------------+------------------+
+| Computer Science   |                2 |
+| Physics            |                2 |
+| Chemistry          |                2 |
+| Biology            |                2 |
+| English Literature |                2 |
++--------------------+------------------+
+5 rows in set (0.12 sec)
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 4. Calculate the total payments made to courses taught by each teacher. Use subqueries to sum
 payments for each teacher's courses.
 
+mysql> SELECT t.first_name, t.last_name,
+    ->        (SELECT SUM(p.amount)
+    ->         FROM Enrollments e
+    ->         JOIN Payments p ON e.student_id = p.student_id
+    ->         WHERE e.course_id IN (
+    ->             SELECT c.course_id
+    ->             FROM Courses c
+    ->             WHERE c.teacher_id = t.teacher_id
+    ->         )
+    ->        ) AS total_payments
+    -> FROM Teacher t;
++------------+-----------+----------------+
+| first_name | last_name | total_payments |
++------------+-----------+----------------+
+| Mohammed   | Javeed    |        1800.00 |
+| Sailesh    | Sakpal    |         950.00 |
+| Nilesh     | Sakpal    |         950.00 |
+| Athul      | Nair      |         950.00 |
+| Anjali     | Sharma    |        1150.00 |
+| Rahul      | Verma     |           NULL |
+| Priya      | Reddy     |           NULL |
+| Sneha      | Patil     |           NULL |
+| Amit       | Singh     |           NULL |
+| Divya      | Mehra     |           NULL |
++------------+-----------+----------------+
+10 rows in set (0.02 sec)
 
+----------------------------------------------------------------------------------------------------------------------------------------
 
 5. Identify students who are enrolled in all available courses. Use subqueries to compare a
 student's enrollments with the total number of courses.
+
+mysql> SELECT s.first_name, s.last_name
+    -> FROM Students s
+    -> WHERE (SELECT COUNT(e.course_id)
+    ->        FROM Enrollments e
+    ->        WHERE e.student_id = s.student_id) =
+    ->       (SELECT COUNT(*) FROM Courses);
+Empty set (0.01 sec)
+
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 6. Retrieve the names of teachers who have not been assigned to any courses. Use subqueries to
 find teachers with no course assignments.
 
+mysql> SELECT first_name, last_name
+    -> FROM Teacher
+    -> WHERE teacher_id NOT IN (
+    ->     SELECT DISTINCT teacher_id
+    ->     FROM Courses
+    -> );
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| Rahul      | Verma     |
++------------+-----------+
+1 row in set (0.04 sec)
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 7. Calculate the average age of all students. Use subqueries to calculate the age of each student
 based on their date of birth.
 
+mysql> SELECT AVG(age) AS average_age
+    -> FROM (
+    ->     SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age
+    ->     FROM Students
+    -> ) AS student_ages;
++-------------+
+| average_age |
++-------------+
+|     21.5000 |
++-------------+
+1 row in set (0.06 sec)
 
+----------------------------------------------------------------------------------------------------------------------------------------
 
 8. Identify courses with no enrollments. Use subqueries to find courses without enrollment
 records.
 
+mysql> SELECT course_name
+    -> FROM Courses c
+    -> WHERE NOT EXISTS (
+    ->     SELECT 1
+    ->     FROM Enrollments e
+    ->     WHERE e.course_id = c.course_id
+    -> );
++-------------+
+| course_name |
++-------------+
+| History     |
+| Geography   |
+| Mathematics |
+| Philosophy  |
+| Psychology  |
++-------------+
+5 rows in set (0.01 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 9. Calculate the total payments made by each student for each course they are enrolled in. Use
 subqueries and aggregate functions to sum payments.
 
+mysql> SELECT s.first_name, s.last_name, c.course_name, SUM(p.amount) AS total_payments
+    -> FROM Students s
+    -> JOIN Enrollments e ON s.student_id = e.student_id
+    -> JOIN Courses c ON e.course_id = c.course_id
+    -> JOIN Payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id, c.course_id;
++------------+-----------+--------------------+----------------+
+| first_name | last_name | course_name        | total_payments |
++------------+-----------+--------------------+----------------+
+| Anuj       | Kundar    | Computer Science   |        1500.00 |
+| Pritesh    | Rai       | Physics            |         600.00 |
+| Chirag     | Padyal    | Chemistry          |         550.00 |
+| Ayyaj      | Aga       | Biology            |         450.00 |
+| Sahil      | Babar     | English Literature |         700.00 |
+| Prashant   | Thombre   | Computer Science   |         300.00 |
+| Sandeep    | Bais      | Physics            |         350.00 |
+| Vishnukant | Mule      | Chemistry          |         400.00 |
+| Prathamesh | Naik      | Biology            |         500.00 |
+| Devraj     | Dumbre    | English Literature |         450.00 |
++------------+-----------+--------------------+----------------+
+10 rows in set (0.00 sec)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 10. Identify students who have made more than one payment. Use subqueries and aggregate
 functions to count payments per student and filter for those with counts greater than one.
 
+mysql> SELECT s.first_name, s.last_name, COUNT(p.payment_id) AS payment_count
+    -> FROM Students s
+    -> JOIN Payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id
+    -> HAVING COUNT(p.payment_id) > 1;
+Empty set (0.04 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 11. Write an SQL query to calculate the total payments made by each student. Join the "Students"
 table with the "Payments" table and use GROUP BY to calculate the sum of payments for each student.
 
+mysql> SELECT s.first_name, s.last_name, SUM(p.amount) AS total_payments
+    -> FROM Students s
+    -> JOIN Payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id;
++------------+-----------+----------------+
+| first_name | last_name | total_payments |
++------------+-----------+----------------+
+| Anuj       | Kundar    |        1500.00 |
+| Pritesh    | Rai       |         600.00 |
+| Chirag     | Padyal    |         550.00 |
+| Ayyaj      | Aga       |         450.00 |
+| Sahil      | Babar     |         700.00 |
+| Prashant   | Thombre   |         300.00 |
+| Sandeep    | Bais      |         350.00 |
+| Vishnukant | Mule      |         400.00 |
+| Prathamesh | Naik      |         500.00 |
+| Devraj     | Dumbre    |         450.00 |
++------------+-----------+----------------+
+10 rows in set (0.04 sec)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 12. Retrieve a list of course names along with the count of students enrolled in each course. Use
 JOIN operations between the "Courses" table and the "Enrollments" table and GROUP BY to count enrollments.
 
+mysql> SELECT c.course_name, COUNT(e.student_id) AS student_count
+    -> FROM Courses c
+    -> JOIN Enrollments e ON c.course_id = e.course_id
+    -> GROUP BY c.course_id;
++--------------------+---------------+
+| course_name        | student_count |
++--------------------+---------------+
+| Computer Science   |             2 |
+| Physics            |             2 |
+| Chemistry          |             2 |
+| Biology            |             2 |
+| English Literature |             2 |
++--------------------+---------------+
+5 rows in set (0.00 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 13. Calculate the average payment amount made by students. Use JOIN operations between the
 "Students" table and the "Payments" table and GROUP BY to calculate the average
+
+mysql> SELECT s.first_name, s.last_name, AVG(p.amount) AS avg_payment
+    -> FROM Students s
+    -> JOIN Payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id;
++------------+-----------+-------------+
+| first_name | last_name | avg_payment |
++------------+-----------+-------------+
+| Anuj       | Kundar    | 1500.000000 |
+| Pritesh    | Rai       |  600.000000 |
+| Chirag     | Padyal    |  550.000000 |
+| Ayyaj      | Aga       |  450.000000 |
+| Sahil      | Babar     |  700.000000 |
+| Prashant   | Thombre   |  300.000000 |
+| Sandeep    | Bais      |  350.000000 |
+| Vishnukant | Mule      |  400.000000 |
+| Prathamesh | Naik      |  500.000000 |
+| Devraj     | Dumbre    |  450.000000 |
++------------+-----------+-------------+
+10 rows in set (0.00 sec)
